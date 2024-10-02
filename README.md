@@ -2,6 +2,7 @@
 
 ## Usage
 
+`main.py`
 ```py
 from func_cache import cache
 
