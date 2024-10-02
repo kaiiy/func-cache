@@ -39,7 +39,7 @@ Cache hit: sleep_add((1, 2), ())
 3
 ```
 
-## LISENCE
+## LICENSE
 
 MIT
 
