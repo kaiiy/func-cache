@@ -3,6 +3,7 @@ import os
 from functools import wraps
 import hashlib
 import base64
+import inspect
 
 
 def get_hash_filename(filename: str):
@@ -14,16 +15,28 @@ def get_hash_filename(filename: str):
     return f"{hash_base64}.pkl"
 
 
-def cache(caller_name: str, max_m_bytes: int = 10):
+def get_caller_dirname():
+    caller_frame = inspect.stack()[1]
+    caller_dirname = os.path.dirname(os.path.abspath(caller_frame.filename))
+    return caller_dirname
+
+
+def get_caller_filename():
+    caller_frame = inspect.stack()[1]
+    caller_filename = caller_frame.filename
+    return caller_filename
+
+
+def cache(caller_name: str | None, max_m_bytes: int = 10, verbose: bool = False):
     def decorator(func):
-        caller_filename = os.path.splitext(os.path.basename(caller_name))[0]
+        caller_filename = caller_name or get_caller_filename()
         cache_name = f"{caller_filename}_{func.__name__}"
         cache_filename = f"{cache_name}.pkl"
 
         if len(cache_filename) > 255:
             cache_filename = get_hash_filename(cache_name)
 
-        script_dir = os.path.dirname(os.path.abspath(__file__))
+        script_dir = get_caller_dirname()
 
         cache_dir = os.path.join(script_dir, ".cache")
         if not os.path.exists(cache_dir):
@@ -42,7 +55,8 @@ def cache(caller_name: str, max_m_bytes: int = 10):
             cache_key = (args, tuple(sorted(kwargs.items())))
 
             if cache_key in cache_data:
-                print(f"\033[32mCache hit:\033[0m {func.__name__}{cache_key}")
+                if verbose:
+                    print(f"\033[32mCache hit:\033[0m {func.__name__}{cache_key}")
                 return cache_data[cache_key]
 
             result = func(*args, **kwargs)

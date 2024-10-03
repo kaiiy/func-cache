@@ -1,10 +1,10 @@
 [project]
 name = "func_cache"
-version = "0.1.0"
+version = "0.1.1"
 description = "Cache decorator for functions"
 readme = "README.md"
 requires-python = ">=3.6"
-dependencies = ["setuptools>=75.1.0"]
+dependencies = []
 
 [tool.uv.sources]
 func-cache = { workspace = true }
