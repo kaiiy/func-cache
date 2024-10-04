@@ -2,6 +2,12 @@
 
 `func-cache` is a Python decorator that caches function results. The cache is stored on the local disk as a `.pkl` file.
 
+## Installation
+
+```sh
+pip install git+https://github.com/kaiiy/func-cache
+```
+
 ## Usage
 
 ```py
