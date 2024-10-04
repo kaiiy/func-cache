@@ -1,43 +1,30 @@
 # func-cache
 
+`func-cache` is a Python decorator that caches function results. The cache is stored on the local disk as a `.pkl` file.
+
 ## Usage
 
-`main.py`
 ```py
 from func_cache import cache
 
 
-@cache(__file__)
-def sleep_add(a, b):
-    import time
-
-    time.sleep(3)
-    return a + b
+@cache(caller_name=None, max_m_bytes=10, verbose=True)
+def heavy_computation(x, y):
+    # Expensive computation
+    return x * y
 
 
-def main():
-    print(sleep_add(1, 2))
-    print(sleep_add(1, 2)) # cache hit
-    print(sleep_add(2, 3))
-    print(sleep_add(2, 3)) # cache hit
-    print(sleep_add(1, 2)) # cache hit
-
-
-if __name__ == "__main__":
-    main()
+first_result = heavy_computation(1, 2) # First call, the computation is executed and cached.
+second_result = heavy_computation(1, 2) # Second call, the result is retrieved from the cache.
 ```
 
-```sh
-$ python main.py
-3
-Cache hit: sleep_add((1, 2), ())
-3
-5
-Cache hit: sleep_add((2, 3), ())
-5
-Cache hit: sleep_add((1, 2), ())
-3
-```
+Since the cache is stored as a file, subsequent calls to the function will be faster across multiple runs of the program.
+
+## Decorator Argument
+
+- `caller_name`: The name of the caller's filename. If `None`, the name of the caller's file is retrieved using the Python inspect module. If you're using this in a Jupyter Notebook, it is recommended to set this argument to the name of the notebook file.
+- `max_m_bytes`: The maximum size of the cache file in MB. If the cache file exceeds this size, the cache is not saved.
+- `verbose`: If `True`, prints messages to the console.
 
 ## LICENSE
 
