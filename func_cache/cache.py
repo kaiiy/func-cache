@@ -16,18 +16,18 @@ def get_hash_filename(filename: str):
 
 
 def get_caller_dirname():
-    caller_frame = inspect.stack()[1]
+    caller_frame = inspect.stack()[2]
     caller_dirname = os.path.dirname(os.path.abspath(caller_frame.filename))
     return caller_dirname
 
 
 def get_caller_filename():
-    caller_frame = inspect.stack()[1]
+    caller_frame = inspect.stack()[2]
     caller_filename = caller_frame.filename
-    return caller_filename
+    return os.path.splitext(os.path.basename(caller_filename))[0]
 
 
-def cache(caller_name: str | None, max_m_bytes: int = 10, verbose: bool = False):
+def cache(caller_name: str | None = None, max_m_bytes: int = 10, verbose: bool = False):
     def decorator(func):
         caller_filename = caller_name or get_caller_filename()
         cache_name = f"{caller_filename}_{func.__name__}"
